@@ -1,0 +1,29 @@
+.input{
+    display: flex;
+    flex-direction: column;
+}
+.r1 .r2 .r3 .r4 .r5{
+    display: flex;
+    flex-direction: row;
+}
+.output {
+    border-style: solid;
+    border-color: black;
+    width: 50%;
+    height: 100px;
+
+}
+
+#formula{
+    border-style: solid;
+    border-color: black;
+    width: 100%;
+    height: 30%;
+}
+
+#result{
+    border-style: solid;
+    border-color: black;
+    width: 100%;
+    height: 60%;
+}
