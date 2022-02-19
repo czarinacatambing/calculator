@@ -1,27 +1,32 @@
-const add = function(a, b) {
+let currentOp;
+let firstOperand;
+let secondOperand;
+
+function add(a, b) {
 	return a +b
 };
 
-const subtract = function(a,b) {
+function subtract(a,b) {
 	return a-b
 };
 
-const sum = function(arr) {
+function sum(arr) {
   if(arr.length>0 ) {
-    return arr.reduce(( total, i) => total += i)}
+    return arr.reduce(( total, i) => total += i)
+  }
   else return 0
 };
 
-const multiply = function(arr) {
+function multiply(arr) {
   if(arr.length>0) return arr.reduce( (total, i) => total * i)
   else return 0
 };
 
-const power = function(a,b) {
+function power(a,b) {
 	return Math.pow(a,b)
 };
 
-const factorial = function(a) {
+function factorial(a) {
   let total=1;
 	for(let i=a;i>0;i--){
    total = total*i
@@ -29,26 +34,19 @@ const factorial = function(a) {
   return total
 };
 
-const clear = function(a) {
+function clear(a) {
   return
 }
 
-let total;
-const operate = function(op, a, b){
-    if(typeof total==='undefined') total = a
-    total = op(total,b)
-    return total
-}
-
-const equals = function(a){
+function equals(a){
   return a;
 }
 
-const divide = function (a,b){
+function divide(a,b){
   return a/b;
 }
 
-const plusminus = function(a){
+function plusminus(a){
   if(a<0){
     return Math.abs(a)
   } else {
@@ -60,7 +58,8 @@ const decimal = function(a){
   return parseFloat(CONCAT(a.toString(),'.00'))
 }
 
-function pressUtility(e) {
+
+function processInput(e) {
     // figure out the operation from the button pressed
     // console.log(e.currentTarget['innerHTML'])
     var util = e.currentTarget.innerHTML
@@ -70,7 +69,7 @@ function pressUtility(e) {
         return clear;
         break;
       case 'Xy': 
-        return power;
+        return power(firstOperand, secondOperand);
         break;
       case 'x!':
         return factorial;
@@ -102,7 +101,9 @@ function pressUtility(e) {
 }
 
 
-const keys = document.querySelectorAll(`button.utility`)
+const keys = document.querySelectorAll(`button`)
 keys.forEach(key=>key.addEventListener('click', 
-    pressUtility)
+    processInput)
 );
+
+
