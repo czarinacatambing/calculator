@@ -1,6 +1,10 @@
+let isPrevUtility=false;
 let currentOp;
 let firstOperand;
 let secondOperand;
+let prevSelection;
+
+
 
 function add(a, b) {
 	return a +b
@@ -59,42 +63,68 @@ const decimal = function(a){
 }
 
 
+function updateDisplay(val){
+  const formula = document.querySelector('div#formula')
+  const result = document.querySelector('div#result')
+  result.innerHTML=val;
+}
+
 function processInput(e) {
     // figure out the operation from the button pressed
     // console.log(e.currentTarget['innerHTML'])
-    var util = e.currentTarget.innerHTML
+    var key = e.currentTarget
     // ['innerHTML']
-    switch(util){
-      case 'AC': 
-        return clear;
-        break;
-      case 'Xy': 
-        return power(firstOperand, secondOperand);
-        break;
-      case 'x!':
-        return factorial;
-        break;
-      case '/':
-        return divide;
-        break;
-      case 'x':
-        return multiply;
-        break;
-      case '-':
-        return subtract;
-        break;
-      case '+':
-        return add;
-        break;
-      case '+/-':
-        return plusminus;
-        break;
-      case '.':
-        return decimal;
-        break;
-      default:
-        return equals;
+  
+    
+
+    if(key.className=='utility') {
+      isPrevUtility=true;
+      
+      switch(util){
+        case 'AC': 
+          return clear;
+          break;
+        case 'Xy': 
+          return power(firstOperand, secondOperand);
+          break;
+        case 'x!':
+          return factorial;
+          break;
+        case '/':
+          return divide;
+          break;
+        case 'x':
+          return multiply;
+          break;
+        case '-':
+          return subtract;
+          break;
+        case '+':
+          return add;
+          break;
+        case '+/-':
+          return plusminus;
+          break;
+        default:
+          return equals;
+      }
+    } else if(key.className=='digit'){
+      // type out digits one by one
+      if(isPrevUtility==false) {
+        (firstOperand==null)? firstOperand=key.innerText:firstOperand=firstOperand+key.innerText
+        updateDisplay(firstOperand)}
+      else if(isPrevUtility==true){
+        (secondOperand==null)? secondOperand=key.innerText:secondOperand=secondOperand+key.innerText
+        updateDisplay(secondOperand)
+      }else{
+        console.log('unhandled')
+        
+      }
+      
+      
+      // secondOperand=key.innerHTML //replace old values in second operand
     }
+    
 
 
 
