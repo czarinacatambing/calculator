@@ -1,29 +1,35 @@
-let isPrevUtility=false;
+let isPrevUtility=false; //only to determine if 1st/2nd operand
+let isCurrentUtility=false; // only to determine if shows on result/formula on updateDisplay
 let currentOp;
 let firstOperand;
 let secondOperand;
 let prevSelection;
+let currentFormula;
 
 
 
 function add(a, b) {
-	return a +b
+	return a+b
 };
 
 function subtract(a,b) {
 	return a-b
 };
 
-function sum(arr) {
-  if(arr.length>0 ) {
-    return arr.reduce(( total, i) => total += i)
-  }
-  else return 0
-};
+// function sum(a,b) {
+//   // if(arr.length>0 ) {
+//   //   return arr.reduce(( total, i) => total += i)
+//   // }
+//   // else return 0
+//   return a+b
+// };
 
-function multiply(arr) {
-  if(arr.length>0) return arr.reduce( (total, i) => total * i)
-  else return 0
+function multiply(a,b) {
+  // if(arr.length>0) return arr.reduce( (total, i) => total * i)
+  // else return 0
+  console.log(parseInt(a))
+  console.log(parseInt(a)*parseInt(b))
+  return a*b
 };
 
 function power(a,b) {
@@ -47,7 +53,6 @@ function equals(a){
 }
 
 const divide = function(a,b){
-  console.log("inside divide")
   return a/b;
 }
 
@@ -63,15 +68,21 @@ const decimal = function(a){
   return parseFloat(CONCAT(a.toString(),'.00'))
 }
 
-
-function updateDisplay(val){
+// NEXT STEP: UPDATE THIS FOR AFTER EQUALS IS PRESSED
+function updateDisplay(formulaVal, resultVal){
+  currentFormula = formulaVal;
   const formula = document.querySelector('div#formula')
   const result = document.querySelector('div#result')
-  if (isPrevUtility==false){
-    result.innerHTML=val;
-  } else {
-    formula.innerHTML=val;
+  if (isCurrentUtility==false){
+    formula.innerHTML=currentFormula;
+    result.innerHTML=resultVal;
+  } else if (isCurrentUtility==true) {
+    formula.innerHTML=formulaVal;
   }
+
+  //first digit shows undefined on results
+  //second operand does not show up on results after clicking number.
+  // does not show up as 7x3 on formula after equals
 }
 
 function processInput(e) {
@@ -84,33 +95,52 @@ function processInput(e) {
 
     if(key.className=='utility') {
       isPrevUtility=true;
-      
+      isCurrentUtility=true;
+
       switch(key.innerText){
         case 'AC': 
           return clear;
         case 'Xy': 
-          return power(firstOperand, secondOperand);
-        case 'x!':
-          return factorial;
+          updateDisplay(firstOperand+key.innerText)
+          currentOp= power;
+          break;
+        // case 'x!':
+        //   return factorial;
         case '/':
           updateDisplay(firstOperand+key.innerText)
           currentOp = divide;
+          break;
         case 'x':
-          return multiply;
+          updateDisplay(firstOperand+key.innerText)
+          currentOp = multiply;
+          break;
         case '-':
-          return subtract;
+          updateDisplay(firstOperand+key.innerText)
+          currentOp= subtract;
+          break;
         case '+':
-          return add;
+          updateDisplay(firstOperand+key.innerText)
+          currentOp = add;
+          break;
         case '+/-':
           return plusminus;
-        default:
-          return currentOp(firstOperand, secondOperand);
+        case '.':
+            return decimal;
+        default:  // equals only applies if 2 operands
+          console.log(currentOp(firstOperand, secondOperand))
+          if(!(['decimal','plusminus'].includes(key.innerText))){
+            result = currentOp(firstOperand, secondOperand)
+            updateDisplay(currentFormula+secondOperand, result)
+            return result;
+          } 
       }
     } else if(key.className=='digit'){
+      isCurrentUtility=false;
+
       // type out digits one by one
       if(isPrevUtility==false) {
         (firstOperand==null)? firstOperand=key.innerText:firstOperand=firstOperand+key.innerText
-        updateDisplay(firstOperand)}
+        updateDisplay('',firstOperand)}
       else if(isPrevUtility==true){
         (secondOperand==null)? secondOperand=key.innerText:secondOperand=secondOperand+key.innerText
         updateDisplay(secondOperand)
@@ -118,9 +148,9 @@ function processInput(e) {
         console.log('unhandled')
         
       }
+      isPrevUtility=false;
       
       
-      // secondOperand=key.innerHTML //replace old values in second operand
     }
     
 
