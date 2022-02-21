@@ -46,7 +46,8 @@ function equals(a){
   return a;
 }
 
-function divide(a,b){
+const divide = function(a,b){
+  console.log("inside divide")
   return a/b;
 }
 
@@ -66,7 +67,11 @@ const decimal = function(a){
 function updateDisplay(val){
   const formula = document.querySelector('div#formula')
   const result = document.querySelector('div#result')
-  result.innerHTML=val;
+  if (isPrevUtility==false){
+    result.innerHTML=val;
+  } else {
+    formula.innerHTML=val;
+  }
 }
 
 function processInput(e) {
@@ -80,33 +85,26 @@ function processInput(e) {
     if(key.className=='utility') {
       isPrevUtility=true;
       
-      switch(util){
+      switch(key.innerText){
         case 'AC': 
           return clear;
-          break;
         case 'Xy': 
           return power(firstOperand, secondOperand);
-          break;
         case 'x!':
           return factorial;
-          break;
         case '/':
-          return divide;
-          break;
+          updateDisplay(firstOperand+key.innerText)
+          currentOp = divide;
         case 'x':
           return multiply;
-          break;
         case '-':
           return subtract;
-          break;
         case '+':
           return add;
-          break;
         case '+/-':
           return plusminus;
-          break;
         default:
-          return equals;
+          return currentOp(firstOperand, secondOperand);
       }
     } else if(key.className=='digit'){
       // type out digits one by one
