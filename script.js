@@ -70,18 +70,23 @@ const decimal = function(a){
 
 // NEXT STEP: UPDATE THIS FOR AFTER EQUALS IS PRESSED
 function updateDisplay(formulaVal, resultVal){
-  currentFormula = formulaVal;
+  
   const formula = document.querySelector('div#formula')
   const result = document.querySelector('div#result')
+  currentFormula = formula.innerText;
+
   if (isCurrentUtility==false){
-    formula.innerHTML=currentFormula;
-    result.innerHTML=resultVal;
+    result.innerHTML= (isPrevUtility==true) ? formulaVal: resultVal;
+    formula.innerHTML=currentFormula; // this only works 
+
   } else if (isCurrentUtility==true) {
     formula.innerHTML=formulaVal;
+    if(currentOp=='equals') result.innerHTML = resultVal; // result of op
   }
 
   //first digit shows undefined on results
   //second operand does not show up on results after clicking number.
+  //    it shows up on formula and results
   // does not show up as 7x3 on formula after equals
 }
 
@@ -127,9 +132,10 @@ function processInput(e) {
         case '.':
             return decimal;
         default:  // equals only applies if 2 operands
-          console.log(currentOp(firstOperand, secondOperand))
+
           if(!(['decimal','plusminus'].includes(key.innerText))){
             result = currentOp(firstOperand, secondOperand)
+            currentOp='equals'
             updateDisplay(currentFormula+secondOperand, result)
             return result;
           } 
