@@ -3,7 +3,7 @@ let isCurrentUtility=false; // only to determine if shows on result/formula on u
 let currentOp;
 let firstOperand;
 let secondOperand;
-let prevSelection;
+let currentResult;
 let currentFormula;
 
 
@@ -81,6 +81,7 @@ function updateDisplay(formulaVal, resultVal){
 
   } else if (isCurrentUtility==true) {
     formula.innerHTML=formulaVal;
+    // result.innerHTML = (i)
     if(currentOp=='equals') result.innerHTML = resultVal; // result of op
   }
 
@@ -96,7 +97,10 @@ function processInput(e) {
     var key = e.currentTarget
     // ['innerHTML']
   
-    
+    if(currentOp==='equals'){
+      firstOperand = currentResult;
+      secondOperand = null;
+    }
 
     if(key.className=='utility') {
       isPrevUtility=true;
@@ -106,25 +110,25 @@ function processInput(e) {
         case 'AC': 
           return clear;
         case 'Xy': 
-          updateDisplay(firstOperand+key.innerText)
+          updateDisplay(firstOperand+key.innerText,'')
           currentOp= power;
           break;
         // case 'x!':
         //   return factorial;
         case '/':
-          updateDisplay(firstOperand+key.innerText)
+          updateDisplay(firstOperand+key.innerText,'')
           currentOp = divide;
           break;
         case 'x':
-          updateDisplay(firstOperand+key.innerText)
+          updateDisplay(firstOperand+key.innerText,'')
           currentOp = multiply;
           break;
         case '-':
-          updateDisplay(firstOperand+key.innerText)
+          updateDisplay(firstOperand+key.innerText,'')
           currentOp= subtract;
           break;
         case '+':
-          updateDisplay(firstOperand+key.innerText)
+          updateDisplay(firstOperand+key.innerText,'')
           currentOp = add;
           break;
         case '+/-':
@@ -136,6 +140,7 @@ function processInput(e) {
           if(!(['decimal','plusminus'].includes(key.innerText))){
             result = currentOp(firstOperand, secondOperand)
             currentOp='equals'
+            currentResult=result;
             updateDisplay(currentFormula+secondOperand, result)
             return result;
           } 
@@ -172,4 +177,11 @@ keys.forEach(key=>key.addEventListener('click',
     processInput)
 );
 
+// // e.current target = multiply
+// firstOperand - 9
+// secondOperand - 7 
+// currentOp - equals
 
+// firstoperand ->set to currentResult
+// currentOp = set to key
+// set secondOperand to null;
