@@ -8,11 +8,21 @@ let currentFormula;
 
 
 
+
+
 function add(a, b) {
-	return a+b
+  if(typeof a == 'string' || typeof b =='string'){
+    a = Number(a)
+    b = Number(b)
+  }
+	return a+b;
 };
 
 function subtract(a,b) {
+  if(typeof a == 'string' || typeof b =='string'){
+    a = Number(a)
+    b = Number(b)
+  }
 	return a-b
 };
 
@@ -27,36 +37,35 @@ function subtract(a,b) {
 function multiply(a,b) {
   // if(arr.length>0) return arr.reduce( (total, i) => total * i)
   // else return 0
-  console.log(parseInt(a))
-  console.log(parseInt(a)*parseInt(b))
   return a*b
 };
 
 function power(a,b) {
+  if(typeof a == 'string' || typeof b =='string'){
+    a = Number(a)
+    b = Number(b)
+  }
 	return Math.pow(a,b)
 };
 
-function factorial(a) {
-  let total=1;
-	for(let i=a;i>0;i--){
-   total = total*i
-  }
-  return total
-};
+
 
 function clear(a) {
   return
 }
 
-function equals(a){
-  return a;
-}
 
 const divide = function(a,b){
+  if(typeof a == 'string' || typeof b =='string'){
+    a = Number(a)
+    b = Number(b)
+  }
   return a/b;
 }
 
 function plusminus(a){
+  if(typeof a == 'string' ) a = Number(a)
+
   if(a<0){
     return Math.abs(a)
   } else {
@@ -64,8 +73,8 @@ function plusminus(a){
   }
 }
 
-const decimal = function(a){
-  return parseFloat(CONCAT(a.toString(),'.00'))
+function decimal(a){
+  return parseFloat(a.toString()+'.00').toFixed(1)
 }
 
 // NEXT STEP: UPDATE THIS FOR AFTER EQUALS IS PRESSED
@@ -80,9 +89,9 @@ function updateDisplay(formulaVal, resultVal){
     formula.innerHTML=currentFormula; // this only works 
 
   } else if (isCurrentUtility==true) {
-    formula.innerHTML=formulaVal;
+    formula.innerHTML= formulaVal;
     // result.innerHTML = (i)
-    if(currentOp=='equals') result.innerHTML = resultVal; // result of op
+    if(currentOp=='equals'|| currentOp==decimal || currentOp==plusminus) result.innerHTML = resultVal; // result of op
   }
 
   //first digit shows undefined on results
@@ -113,8 +122,6 @@ function processInput(e) {
           updateDisplay(firstOperand+key.innerText,'')
           currentOp= power;
           break;
-        // case 'x!':
-        //   return factorial;
         case '/':
           updateDisplay(firstOperand+key.innerText,'')
           currentOp = divide;
@@ -132,12 +139,14 @@ function processInput(e) {
           currentOp = add;
           break;
         case '+/-':
-          return plusminus;
+          return plusminus(firstOperand);
         case '.':
-            return decimal;
+            currentOp=decimal
+            firstOperand = decimal(firstOperand+key.innerText)
+            updateDisplay('', firstOperand)
         default:  // equals only applies if 2 operands
 
-          if(!(['decimal','plusminus'].includes(key.innerText))){
+          if(!(['.','+/-'].includes(key.innerText))){
             result = currentOp(firstOperand, secondOperand)
             currentOp='equals'
             currentResult=result;
@@ -177,11 +186,9 @@ keys.forEach(key=>key.addEventListener('click',
     processInput)
 );
 
-// // e.current target = multiply
-// firstOperand - 9
-// secondOperand - 7 
-// currentOp - equals
-
-// firstoperand ->set to currentResult
-// currentOp = set to key
-// set secondOperand to null;
+// issues to fix:
+// 1. should consider secondOperand as operands on functions
+// 2. round long decimals
+// 3. pressing clear should wipe out existing data
+// 4. display error when dividing by 0
+// 5. check that prefmature "=" wont cause errors
