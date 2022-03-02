@@ -50,8 +50,19 @@ function power(a,b) {
 
 
 
-function clear(a) {
-  return
+function clear() {
+  isPrevUtility=false; //only to determine if 1st/2nd operand
+  isCurrentUtility=false; // only to determine if shows on result/formula on updateDisplay
+  currentOp=null;
+  firstOperand='';
+  secondOperand='';
+  currentResult=null;
+  currentFormula=null;
+  let formula = document.querySelector('div#formula')
+  let result = document.querySelector('div#result')
+
+  formula.innerText = ''
+  result.innerText = ''
 }
 
 
@@ -117,7 +128,7 @@ function processInput(e) {
 
       switch(key.innerText){
         case 'AC': 
-          return clear;
+          clear();
         case 'Xy': 
           updateDisplay(firstOperand+key.innerText,'')
           currentOp= power;
