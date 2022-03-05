@@ -114,13 +114,26 @@ function updateDisplay(formulaVal, resultVal){
 function processInput(e) {
     // figure out the operation from the button pressed
     // console.log(e.currentTarget['innerHTML'])
-    var key = e.currentTarget
+    let key = e.currentTarget
+    let operand;
     // ['innerHTML']
   
+
     if(currentOp==='equals'){
       firstOperand = currentResult;
       secondOperand = null;
     }
+
+    // identify if key pressed is 1st or 2nd operand
+    // if 1st operarnd is null, key = firstOperand
+    // if 1st operand not null but 2nd is, key = secondOperand
+    //  if both are NOT null, key will always be 2nd operand
+    if(!(firstOperand==null) && secondOperand==null){
+      operand = 1;
+    } else {
+      operand = 2
+    }
+
 
     if(key.className=='utility') {
       isPrevUtility=true;
@@ -130,31 +143,37 @@ function processInput(e) {
         case 'AC': 
           clear();
         case 'Xy': 
-          updateDisplay(firstOperand+key.innerText,'')
+          (operand==1) ?  updateDisplay(firstOperand+key.innerText,'') : updateDisplay(secondOperand+key.innerText,'')
           currentOp= power;
           break;
         case '/':
-          updateDisplay(firstOperand+key.innerText,'')
+          (operand==1) ?  updateDisplay(firstOperand+key.innerText,'') : updateDisplay(secondOperand+key.innerText,'')
           currentOp = divide;
           break;
         case 'x':
-          updateDisplay(firstOperand+key.innerText,'')
+          (operand==1) ?  updateDisplay(firstOperand+key.innerText,'') : updateDisplay(secondOperand+key.innerText,'')
           currentOp = multiply;
           break;
         case '-':
-          updateDisplay(firstOperand+key.innerText,'')
+          (operand==1) ?  updateDisplay(firstOperand+key.innerText,'') : updateDisplay(secondOperand+key.innerText,'')
           currentOp= subtract;
           break;
         case '+':
-          updateDisplay(firstOperand+key.innerText,'')
+          (operand==1) ?  updateDisplay(firstOperand+key.innerText,'') : updateDisplay(secondOperand+key.innerText,'')
           currentOp = add;
           break;
         case '+/-':
           return plusminus(firstOperand);
         case '.':
             currentOp=decimal
-            firstOperand = decimal(firstOperand+key.innerText)
-            updateDisplay('', firstOperand)
+            
+            if (operand==1) { 
+                firstOperand = decimal(firstOperand+key.innerText)
+                updateDisplay(firstOperand+key.innerText,'')
+            } else { 
+              secondOperand = decimal(secondOperand+key.innerText)
+              updateDisplay(secondOperand+key.innerText,'')
+            }
         default:  // equals only applies if 2 operands
 
           if(!(['.','+/-'].includes(key.innerText))){
