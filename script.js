@@ -148,51 +148,34 @@ function pickOperation(key){
   switch(key.innerText){
     case 'AC': 
       clear();
-    // case 'Xy': 
-    //   (operand==1) ?  updateDisplay(firstOperand+key.innerText,'') : updateDisplay(secondOperand+key.innerText,'')
-    //   currentOp= power;
-    //   break;
-    // case '/':
-    //   (operand==1) ?  updateDisplay(firstOperand+key.innerText,'') : updateDisplay(secondOperand+key.innerText,'')
-    //   currentOp = divide;
-    //   break;
+    case 'Xy': 
+      return {'function': power, 'char':key.innerText}
+    case '/':
+      return {'function': divide, 'char':key.innerText}
     case 'x':
       return {'function':multiply, 'char': key.innerText};
-    // case '-':
-    //   (operand==1) ?  updateDisplay(firstOperand+key.innerText,'') : updateDisplay(secondOperand+key.innerText,'')
-    //   currentOp= subtract;
-    //   break;
-    // case '+':
-    //   (operand==1) ?  updateDisplay(firstOperand+key.innerText,'') : updateDisplay(secondOperand+key.innerText,'')
-    //   currentOp = add;
-    //   break;
+    case '-':
+      return {'function':subtract, 'char': key.innerText};
+    case '+':
+      return {'function':add, 'char': key.innerText};
     case '+/-':
-      return plusminus(firstOperand);
+      return {'function':plusminus, 'char': key.innerText};
     case '.':
-        currentOp=decimal
-        
-        if (operand==1) { 
-            firstOperand = decimal(firstOperand+key.innerText)
-            updateDisplay(firstOperand,'')
-        } else { 
-          secondOperand = decimal(secondOperand+key.innerText)
-
-          updateDisplay(secondOperand,'')
-        }
+      return {'function':decimal, 'char': key.innerText};
     case '=': 
         isRepeat = true;
         return {'result': currentOp['function'](firstOperand, secondOperand), 'char':'=', 'prevChar': currentOp['char']}
 
     default:  // equals only applies if 2 operands
 
-      if(!(['.','+/-'].includes(key.innerText))){
-        result = currentOp(firstOperand, secondOperand)
-        currentOp='equals'
-        isRepeat = true;
-        currentResult=result;
-        updateDisplay(currentFormula+secondOperand, result)
-        return result;
-      } 
+        if(!(['.','+/-'].includes(key.innerText))){
+          result = currentOp(firstOperand, secondOperand)
+          currentOp='equals'
+          isRepeat = true;
+          currentResult=result;
+          updateDisplay(currentFormula+secondOperand, result)
+          return result;
+        } 
 
 }}
 
