@@ -121,16 +121,25 @@ function updateDisplay(type){
   if(type===1){
     (typeof prevKey=== 'undefined' )? formula.innerHTML = '' : formula.innerHTML=firstOperand+currentOp['char']
     result.innerHTML = firstOperand
-  } else if(type===2){
+  } else if(type===2){// type 2: [action] operator clicked [formula] 1stOp, operator [result] N/A
+
+    // firstOperator of first run  or first Operator of succeeding runs
     (typeof secondOperand === 'undefined'|| (isRepeat && prevKey.innerTexT==="=" ) ) ?  result.innerHTML = '' : result.innerHTML = secondOperand
     formula.innerHTML = firstOperand+currentOp['char']
-  } else {
+  } else if(type===3) { // WITH 2 DIGITS--> firstOperator  of first run  or first Operator of succeeding runs
+    formula.innerHTML = '' 
+    result.innerHTML = firstOperand
+  } else if(type===4) { // WITH 2 DIGITS--> secondOperator  of first run  or second Operator of succeeding runs
+    formula.innerHTML = firstOperand+currentOp['char']
+    result.innerHTML = secondOperand
+
+  } else { // type 3 : [action] = clicked [formula] 1st Op, operator, 2ndOp [result] calculation 
     formula.innerHTML = firstOperand+currentOp['prevChar']+secondOperand
     result.innerHTML=currentOp['result']
   }
-  // type 2: [action] operator clicked [formula] 1stOp, operator [result] N/A
+  
 
-  // type 3 : [action] = clicked [formula] 1st Op, operator, 2ndOp [result] calculation 
+  
 }
 
 
@@ -217,18 +226,35 @@ function processInput(e) {
 
     if(isRepeat) {
       if(key.className=='utility' && key.innerText==="=") {
-        firstOperand = currentResult;
-        secondOperand = null;
-        updateDisplay(2)
+        currentOp = pickOperation(key)
+        updateDisplay(9)
+        prevKey=key
       } else if(key.className=='utility' && !(key.innerText==="=")){ //first operator of nth run 
         firstOperand = currentOp['result'];
         secondOperand = null;
         currentOp = pickOperation(key)
         updateDisplay(2)
+        prevKey=key
         
 
-      } else if(key.className=='digit'){
-        
+      } else if (key.className==='digit'){ 
+        if(prevKey.className==='digit'){ 
+          // currentOp = pickOperation(key)
+          if (typeof secondOperand==='undefined') {   
+            firstOperand = firstOperand+key.innerText 
+            updateDisplay(3)
+          } else {  //2 digit 2ndOperand on first run
+            secondOperand = secondOperand+key.innerText 
+            updateDisplay(4)
+
+            
+          }
+          prevKey=key
+        } else { // first run and 2nd operator clicked
+          secondOperand=key.innerText
+          updateDisplay(2)
+          prevKey=key
+        }
       } else {
         console.log("---Warning: Unhandled -----")
       }
@@ -239,11 +265,17 @@ function processInput(e) {
         firstOperand = key.innerText;
         updateDisplay(1)
         prevKey = key
-      } else if (key.className==='digit'){
-        if(prevKey.className==='digit'){
+      } else if (key.className==='digit'){ 
+        if(prevKey.className==='digit'){ 
           // currentOp = pickOperation(key)
-
-          updateDisplay(2)
+          if (typeof secondOperand==='undefined') {   
+            firstOperand = firstOperand+key.innerText 
+            updateDisplay(3)
+          } else {  //2 digit 2ndOperand on first run
+            secondOperand = secondOperand+key.innerText 
+            updateDisplay(4)
+            
+          }
           prevKey=key
         } else { // first run and 2nd operator clicked
           secondOperand=key.innerText
@@ -253,7 +285,7 @@ function processInput(e) {
       } else {
         currentOp = pickOperation(key)
         if (key.innerText==='=') {
-          updateDisplay(3) } // when = clicked during first run
+          updateDisplay(9) } // when = clicked during first run
         else {
           updateDisplay(2) //first run and first operator clicked
         }
