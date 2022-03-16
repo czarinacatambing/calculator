@@ -1,4 +1,5 @@
 let currentOp;
+let semiOp;
 let firstOperand;
 let secondOperand;
 let currentResult;
@@ -87,31 +88,9 @@ function plusminus(a){
 }
 
 function decimal(a){
-  return parseFloat(a.toString()+'.00').toFixed(1)
+  return (a.indexOf('.') !== 0) ? a.toString()+"." : a.toString()
+  //parseFloat(a.toString()+'.00').toFixed(1)
 }
-
-// NEXT STEP: UPDATE THIS FOR AFTER EQUALS IS PRESSED
-// function updateDisplay(formulaVal, resultVal){
-  
-//   const formula = document.querySelector('div#formula')
-//   const result = document.querySelector('div#result')
-//   currentFormula = formula.innerText;
-
-//   if (isCurrentUtility==false){
-//     result.innerHTML= resultVal; // (isPrevUtility==true) ? formulaVal: 
-//     formula.innerHTML=currentFormula; // this only works 
-
-//   } else if (isCurrentUtility==true) {
-//     formula.innerHTML= formulaVal;
-//     // result.innerHTML = (i)
-//     if(currentOp=='equals'|| currentOp==decimal || currentOp==plusminus) result.innerHTML = resultVal; // result of op
-//   }
-
-//   //first digit shows undefined on results
-//   //second operand does not show up on results after clicking number.
-//   //    it shows up on formula and results
-//   // does not show up as 7x3 on formula after equals
-// }
 
 
 function updateDisplay(type){
@@ -132,6 +111,12 @@ function updateDisplay(type){
   } else if(type===4) { // WITH 2 DIGITS--> secondOperator  of first run  or second Operator of succeeding runs
     formula.innerHTML = firstOperand+currentOp['char']
     result.innerHTML = secondOperand
+  } else if(type===5) { // DECIMAL or +/- on first operand
+    formula.innerHTML = ''
+    result.innerHTML = firstOperand
+  } else if(type===6) { // DECIMAL or +/- on 2nd operand
+    formula.innerHTML = firstOperand+currentOp['char']
+    result.innerHTML = secondOperand
 
   } else { // type 3 : [action] = clicked [formula] 1st Op, operator, 2ndOp [result] calculation 
     formula.innerHTML = firstOperand+currentOp['prevChar']+secondOperand
@@ -142,6 +127,17 @@ function updateDisplay(type){
   
 }
 
+
+function pickSemiOp(key){
+  switch(key.innerText){
+    case '+/-':
+      return {'function':plusminus, 'char': key.innerText};
+    case '.':
+      return {'function':decimal, 'char': key.innerText};
+    default:
+      return
+  }
+}
 
 function pickOperation(key){
 
@@ -158,10 +154,6 @@ function pickOperation(key){
       return {'function':subtract, 'char': key.innerText};
     case '+':
       return {'function':add, 'char': key.innerText};
-    case '+/-':
-      return {'function':plusminus, 'char': key.innerText};
-    case '.':
-      return {'function':decimal, 'char': key.innerText};
     case '=': 
         isRepeat = true;
         return {'result': currentOp['function'](firstOperand, secondOperand), 'char':'=', 'prevChar': currentOp['char']}
@@ -180,8 +172,6 @@ function pickOperation(key){
 }}
 
 
-
-// where does updateDisplay reside??? 
 
 function processInput(e) {
     // figure out the operation from the button pressed
@@ -218,14 +208,15 @@ function processInput(e) {
         currentOp = pickOperation(key)
         updateDisplay(2)
         prevKey=key
-        
-
       } else if (key.className==='digit'){ 
         if(prevKey.className==='digit'){ 
           // currentOp = pickOperation(key)
           if (typeof secondOperand==='undefined') {   
             firstOperand = firstOperand+key.innerText 
             updateDisplay(3)
+          } else if(prevKey.className==='semiUtility'){
+            firstOperand = firstOperand+key.innerText 
+            updateDisplay(5)
           } else {  //2 digit 2ndOperand on first run
             secondOperand = secondOperand+key.innerText 
             updateDisplay(4)
@@ -233,16 +224,36 @@ function processInput(e) {
             
           }
           prevKey=key
+        } else if(prevKey.className==='semiUtility'){ 
+          secondOperand = secondOperand+key.innerText 
+          updateDisplay(6)
         } else { // first run and 2nd operator clicked
           secondOperand=key.innerText
           updateDisplay(2)
+          prevKey=key
+        }
+      } else if(key.className==='semiUtility') {
+        
+        if(prevKey.className==='digit'){ 
+          semiOp = pickSemiOp(key)
+          secondOperand = semiOp['function'](secondOperand)
+          updateDisplay(6)
+            
+          
+          prevKey=key
+        } else { // first run and operator clicked. 2nd operand 1 digit
+          secondOperand=semiOp['function'](secondOperand)
+          updateDisplay(6)
           prevKey=key
         }
       } else {
         console.log("---Warning: Unhandled -----")
       }
 
-    } else { 
+    } 
+    
+    
+    else { 
       // first run and initiating first operand
       if(!(prevKey) && key.className=='digit') {
         firstOperand = key.innerText;
@@ -260,11 +271,40 @@ function processInput(e) {
             
           }
           prevKey=key
-        } else { // first run and 2nd operator clicked
+        } else if(prevKey.className==='semiUtility'){
+          if (typeof secondOperand==='undefined') {   
+            firstOperand = firstOperand+key.innerText 
+            updateDisplay(5)
+          } else {  //2 digit 2ndOperand on first run
+            secondOperand = secondOperand+key.innerText 
+            updateDisplay(6)
+            
+          }
+        
+        } else { // first run and operator clicked; 2nd operand 1 digit
           secondOperand=key.innerText
           updateDisplay(2)
           prevKey=key
         }
+      } else if(key.className==='semiUtility') {
+        
+        if(prevKey.className==='digit'){ 
+          semiOp = pickSemiOp(key)
+          if (typeof secondOperand==='undefined') {   
+            firstOperand = semiOp['function'](firstOperand)
+            updateDisplay(5)
+          } else {  //2 digit 2ndOperand on first run
+            secondOperand = semiOp['function'](secondOperand)
+            updateDisplay(6)
+            
+          }
+          prevKey=key
+        } else { // first run and operator clicked. 2nd operand 1 digit
+          secondOperand=semiOp['function'](secondOperand)
+          updateDisplay(6)
+          prevKey=key
+        }
+      
       } else {
         currentOp = pickOperation(key)
         if (key.innerText==='=') {
@@ -289,32 +329,3 @@ function processInput(e) {
   );
   
 
-
-
-   
-      // isCurrentUtility=false;
-
-      // if(isRepeat===true) secondOperand = ''; // due to condition on digit where we assign secondOperand to be same as currentResult
-
-      // // type out digits one by one
-      // if(isPrevUtility==false) {
-      //   (firstOperand==null)? firstOperand=key.innerText:firstOperand=firstOperand+key.innerText
-      //   updateDisplay('',firstOperand)}
-      // else if(isPrevUtility==true){
-      //   (secondOperand==null)? secondOperand=key.innerText:secondOperand=secondOperand+key.innerText
-      //   updateDisplay('',secondOperand)
-      // }else{
-      //   console.log('unhandled')
-        
-      // }
-      // if (operand==1) { 
-      //   (firstOperand==null)? firstOperand = key.innerText : firstOperand=firstOperand+key.innerText
-      //   updateDisplay('',firstOperand)
-      // } else { 
-      //   (secondOperand==null)? secondOperand = key.innerText : secondOperand=secondOperand+key.innerText
-      //   updateDisplay('',secondOperand)
-      // }
-
-
-      // isPrevUtility=false;
-      
