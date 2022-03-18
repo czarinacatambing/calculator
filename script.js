@@ -177,25 +177,6 @@ function processInput(e) {
     // figure out the operation from the button pressed
     // console.log(e.currentTarget['innerHTML'])
     let key = e.currentTarget
-    let operand;
-    // ['innerHTML']
-  
-
-
-    // identify if key pressed is 1st or 2nd operand
-    // if 1st operarnd is null, key = firstOperand
-    // if 1st operand not null but 2nd is, key = secondOperand
-    //  if both are NOT null, key will always be 2nd operand
-    // if(!(firstOperand==null) && secondOperand==null && isPrevUtility==false){
-    //   operand = 1;
-    // } else if (firstOperand==null && secondOperand==null) {
-    //   operand = 1
-    // } else {
-    //   operand = 2;
-    // }
-
-
-
 
     if(isRepeat) {
       if(key.className=='utility' && key.innerText==="=") {
@@ -241,6 +222,9 @@ function processInput(e) {
             
           
           prevKey=key
+        
+        } else if(key.className==='semiUtility') {
+          // placeholder for case when decimal and +/- clicked twice
         } else { // first run and operator clicked. 2nd operand 1 digit
           secondOperand=semiOp['function'](secondOperand)
           updateDisplay(6)
@@ -299,6 +283,8 @@ function processInput(e) {
             
           }
           prevKey=key
+        } else if(key.className==='semiUtility') {
+          // placeholder for case when decimal and +/- clicked twice
         } else { // first run and operator clicked. 2nd operand 1 digit
           secondOperand=semiOp['function'](secondOperand)
           updateDisplay(6)
