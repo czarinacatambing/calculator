@@ -290,7 +290,9 @@ function processInput(e) {
           updateDisplay(6)
           prevKey=key
         }
-      
+      //  if operator was clicked before  any operand
+      } else if (key.className==='utility' && (typeof firstOperand=== 'undefined' || firstOperand=== '')){
+        return;
       } else {
         currentOp = pickOperation(key)
         if (key.innerText==='=') {
