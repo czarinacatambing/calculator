@@ -1,3 +1,5 @@
+
+
 .input{
     display: flex;
     flex-direction: column;
@@ -95,7 +97,7 @@ body
     flex-direction: row;
     align-items: stretch;
     justify-content: center;
-    background-color: #FFFDE7;
+    background: #f0f0f0;
 
 
 
@@ -161,3 +163,40 @@ body
     height: 70%; */
 
 }
+
+/* The ribbons */
+
+.corner-ribbon{
+    width: 300px;
+    background: #e43;
+    position: absolute;
+    top: 25px;
+    left: -50px;
+    text-align: center;
+    line-height: 50px;
+    letter-spacing: .5px;
+    color: #f0f0f0;
+    transform: rotate(-35deg);
+    -webkit-transform: rotate(-35deg);
+    /* padding-left:10px; */
+
+  }
+  
+  /* Custom styles */
+  
+  .corner-ribbon.sticky{
+    position: fixed;
+  }
+  
+  .corner-ribbon.shadow{
+    box-shadow: 0 0 3px rgba(0,0,0,.3);
+  }
+  .corner-ribbon.bottom-right{
+    top: auto;
+    right: -50px;
+    bottom: 35px;
+    left: auto;
+    transform: rotate(-35deg);
+    -webkit-transform: rotate(-35deg);
+  }
+  .corner-ribbon.green{background: #2c7;}

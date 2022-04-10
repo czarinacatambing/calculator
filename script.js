@@ -61,6 +61,7 @@ function clear() {
   currentResult=null;
   currentFormula=null;
   isRepeat = false;
+  prevKey = null;
   let formula = document.querySelector('div#formula')
   let result = document.querySelector('div#result')
 
@@ -98,7 +99,9 @@ function updateDisplay(type){
   const result = document.querySelector('div#result')
   // type 1: [action] 1stOp clicked [formula] 1stOp only [result] N/A
   if(type===1){
-    (typeof prevKey=== 'undefined' )? formula.innerHTML = '' : formula.innerHTML=firstOperand+currentOp['char']
+    (typeof prevKey=== 'undefined' ) || (prevKey===null) ? 
+    formula.innerHTML = '' : 
+    formula.innerHTML=firstOperand+currentOp['char']
     result.innerHTML = firstOperand
   } else if(type===2){// type 2: [action] operator clicked [formula] 1stOp, operator [result] N/A
 
@@ -117,7 +120,9 @@ function updateDisplay(type){
   } else if(type===6) { // DECIMAL or +/- on 2nd operand
     formula.innerHTML = firstOperand+currentOp['char']
     result.innerHTML = secondOperand
-
+  } else if(type===7) { // AC
+    formula.innerHTML = ''
+    result.innerHTML = ''
   } else { // type 3 : [action] = clicked [formula] 1st Op, operator, 2ndOp [result] calculation 
     formula.innerHTML = firstOperand+currentOp['prevChar']+secondOperand
     result.innerHTML=currentOp['result']
@@ -183,7 +188,7 @@ function processInput(e) {
         currentOp = pickOperation(key)
         updateDisplay(9)
         prevKey=key
-      } else if(key.className=='utility' && !(key.innerText==="=")){ //first operator of nth run 
+      } else if(key.className=='utility' && !(key.innerText==="=") && !(key.innerText==="AC")){ //first operator of nth run 
         firstOperand = currentOp['result'];
         secondOperand = null;
         currentOp = pickOperation(key)
@@ -232,6 +237,11 @@ function processInput(e) {
         }
       } else {
         console.log("---Warning: Unhandled -----")
+        currentOp = pickOperation(key)
+        if(key.innerText==='AC'){
+          updateDisplay(7)
+          prevKey=null;
+        }
       }
 
     } 
@@ -297,12 +307,16 @@ function processInput(e) {
         currentOp = pickOperation(key)
         if (key.innerText==='=') {
           updateDisplay(9) } // when = clicked during first run
+        // else if(key)
+        else if(key.innerText==='AC'){
+          updateDisplay(7)
+        }
         else {
           updateDisplay(2) //first run and first operator clicked
         }
         // (key.innerText==='=') ? updateDisplay(3) : updateDisplay(2)
 
-        prevKey=key
+        (key.innerText==='AC')? prevKey=null : prevKey=key // needed so next digit will be assigned to first operand
       }
     }
 
